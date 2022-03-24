@@ -18,7 +18,7 @@ Hacky tools to automatically create a SANS index based off the course pdf files.
 
 Please note that the -n field is used to split the txt into pages, as we use the License name as the page delimiter (it is the only string persistant across pages). You will need to enter YOUR first and last name where "John Smith" is noted in the comand above. 
 
-NOTE: Repeat steps 3-5 for each book, changing the "1" in the file name to the corresponding book.
+**NOTE**: Repeat steps 3-5 for each book, changing the "1" in the file name to the corresponding book.
 
 Combine the indexes created by `sans_indexer.py` into one index with the following command:
 `python3 index_combiner.py SANS_Book_1_Index.txt SANS_Book_2_Index.txt SANS_Book_3_Index.txt > combined_index.txt`. This will create an index which displays both book number and page number of each keyword.
