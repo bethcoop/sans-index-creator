@@ -5,6 +5,7 @@ Hacky tools to automatically create a SANS index based off the course pdf files.
 1) Download course pdf from https://www.sans.org/account/download-materials. Download each book individually, not the combined version.
 2) Create a password file, paste your SANS password in it and save it.
   `nano password.tx`
+  Paste or enter your SANS password.
   `ctrl+x`
   `y`
   `Enter`
