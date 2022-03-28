@@ -1,5 +1,8 @@
 # sans-index-creator
-Hacky tools to automatically create a SANS index based off the course pdf files.
+
+Forked from GeOrg3
+
+https://github.com/Ge0rg3/sans-index-creator
 
 ## How to use
 1) Download course pdf's from https://www.sans.org/account/download-materials. Download each book individually, not the combined version.
