@@ -4,7 +4,20 @@ Forked from GeOrg3
 
 https://github.com/Ge0rg3/sans-index-creator
 
+## Requirements
+
+The following steps require a Linux system in order to perform the actions. Additionally, the following packages will need to be installed. 
+
+qpdf
+
+``sudo apt-get install qpdf``
+
+pdftotext
+
+``sudo apt-get install poppler-utils``
+
 ## How to use
+
 1) Download course pdf's from https://www.sans.org/account/download-materials. Download each book individually, not the combined version.
 
 2) Create a password file, paste your SANS password in it and save it.
