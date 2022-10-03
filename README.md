@@ -6,32 +6,49 @@ https://github.com/Ge0rg3/sans-index-creator
 
 ## How to use
 1) Download course pdf's from https://www.sans.org/account/download-materials. Download each book individually, not the combined version.
+
 2) Create a password file, paste your SANS password in it and save it.
-  `nano password.tx`
-  Paste or enter your SANS password.
-  `ctrl+x`
-  `y`
-  `Enter`
+
+    ```
+    nano password.tx
+    Paste or enter your SANS password.
+    ctrl+x
+    y
+    Enter
+    ```
+  
 3) Remove pdf password through qpdf:
-  `qpdf --password-file=password.txt -decrypt "SANS_Book_1.pdf" "SANS_Book_1_unlocked.pdf"`
+
+    ```qpdf --password-file=password.txt -decrypt "SANS_Book_1.pdf" "SANS_Book_1_unlocked.pdf"```
+  
 4) Convert new pdf to txt:
-  `pdftotext SANS_Book_1_unlocked.pdf SANS_Book_1_unlocked.txt`
+
+    ```pdftotext SANS_Book_1_unlocked.pdf SANS_Book_1_unlocked.txt```
+  
 5) Create index based off txt file (this can take ~5 minutes because each word is searched for in the full English dictionary):
-  `python3 sans_indexer.py -i SANS_Book_1_unlocked.txt -o SANS_Book_1_Index.txt -n "John Smith"`
+
+    ```python3 sans_indexer.py -i SANS_Book_1_unlocked.txt -o SANS_Book_1_Index.txt -n "John Smith"```
 
 Please note that the -n field is used to split the txt into pages, as we use the License name as the page delimiter (it is the only string persistant across pages). You will need to enter YOUR first and last name where "John Smith" is noted in the comand above. 
 
 **NOTE**: Repeat steps 3-5 for each book, changing the "1" in the file name to the corresponding book.
 
 Combine the indexes created by `sans_indexer.py` into one index with the following command:
-`python3 index_combiner.py SANS_Book_1_Index.txt SANS_Book_2_Index.txt SANS_Book_3_Index.txt > combined_index.txt`. This will create an index which displays both book number and page number of each keyword.
+
+    python3 index_combiner.py SANS_Book_1_Index.txt SANS_Book_2_Index.txt SANS_Book_3_Index.txt > combined_index.txt. 
+
+This will create an index which displays both book number and page number of each keyword.
 
 ## How Does it Work?
+
 For something to be counted as a "word" (and therefore added to the index), it has to meet certain criteria:
+
+```
 * At least 3 chars once certain characters/phrases are stripped from it
 * Not in the English dictionary
 * Does not start with number
 * Is not a link
+```
 
 ## Output example
 Here is a snippet of the output for a course pdf:
