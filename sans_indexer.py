@@ -3,6 +3,7 @@
 import requests as rq
 import argparse
 import sys
+from nltk.corpus import stopwords
 
 # Parse input
 Usage = ("""{}SANS Txt to Index
@@ -17,6 +18,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input-file", help="txt file of SANS book.")
 parser.add_argument("-o", "--output-file", help="output file of index.")
 parser.add_argument("-n", "--student-name", help="full name of student.")
+parser.add_argument("-m", "--mode", help="f for stop word removal mode, otherwise common word removal mode", nargs='?', default=None)
 options = parser.parse_args(sys.argv[1:])
 
 
@@ -29,9 +31,15 @@ if not options.output_file:
 delimeter = "Licensed To: "
 if options.student_name:
     delimeter += options.student_name
-
 # Get common english words
-common_words = rq.get("https://raw.githubusercontent.com/dwyl/english-words/master/words.txt").text.split("\n")
+common_word_mode = True
+if options.mode and options.mode == 'f':
+    print("NLTK stop word removal mode")
+    stop_words = set(stopwords.words('english'))
+    common_word_mode = False
+else:
+    print("Common word removal mode")
+    common_words = rq.get("https://raw.githubusercontent.com/dwyl/english-words/master/words.txt").text.split("\n")
 # function to recursively strip given characters in a word
 characters_to_strip = "()'\":,”“‘?;-•’—…[]!"
 phrases_to_strip = ["'s", "'re", "'ve", "'t", "[0]", "[1]", "[2]", "[3]", "[4]", "[5]", "[6]"]
@@ -57,8 +65,12 @@ def word_is_eligible(word):
     if word[0].isdigit():
         return False
     # Not common english word
-    if word.lower() in common_words or word.lower() + "s" in common_words:
-        return False
+    if common_word_mode:
+        if word.lower() in common_words or word.lower() + "s" in common_words:
+            return False
+    else:
+        if word.lower() in stop_words or word.lower() + "s" in stop_words:
+            return False
     # Not SANS url
     if word.startswith("http://") or word.startswith("https://"):
         return False

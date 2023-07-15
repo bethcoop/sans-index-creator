@@ -43,6 +43,11 @@ pdftotext
     ```python3 sans_indexer.py -i SANS_Book_1_unlocked.txt -o SANS_Book_1_Index.txt -n "John Smith"```
 
 Please note that the -n field is used to split the txt into pages, as we use the License name as the page delimiter (it is the only string persistant across pages). You will need to enter YOUR first and last name where "John Smith" is noted in the comand above. 
+Optionally add -m (--mode) flag. Us -m f for stop word removal mode, otherwise will run in common word removal mode
+
+
+    ```python3 sans_indexer.py -i SANS_Book_1_unlocked.txt -o SANS_Book_1_Index.txt -n "John Smith" -m f```
+
 
 **NOTE**: Repeat steps 3-5 for each book, changing the "1" in the file name to the corresponding book.
 
