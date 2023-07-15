@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
+
 import requests as rq
 import argparse
 import sys
@@ -18,9 +19,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input-file", help="txt file of SANS book.")
 parser.add_argument("-o", "--output-file", help="output file of index.")
 parser.add_argument("-n", "--student-name", help="full name of student.")
-parser.add_argument("-m", "--mode", help="f for stop word removal mode, otherwise common word removal mode", nargs='?', default=None)
+parser.add_argument("-m", "--mode", help="f for stop word removal mode, otherwise common word removal mode", nargs='?',
+                    default=None)
 options = parser.parse_args(sys.argv[1:])
-
 
 if not options.input_file:
     exit(Usage.format("Please enter an index file.\n"))
@@ -43,6 +44,8 @@ else:
 # function to recursively strip given characters in a word
 characters_to_strip = "()'\":,”“‘?;-•’—…[]!"
 phrases_to_strip = ["'s", "'re", "'ve", "'t", "[0]", "[1]", "[2]", "[3]", "[4]", "[5]", "[6]"]
+
+
 def strip_characters(word):
     word_length = len(word)
     word = word.replace("’", "'")
@@ -55,6 +58,7 @@ def strip_characters(word):
             return word
         else:
             word_length = len(word)
+
 
 # Check that word should be added to index
 def word_is_eligible(word):
@@ -76,15 +80,15 @@ def word_is_eligible(word):
         return False
     return True
 
+
 # Get pages in pdf
 with open(options.input_file, "r") as f:
     data = f.read()
     pages = data.split(delimeter)[1:]
 
-
 # Get words per page
-index = {} # Stores page number and words on page
-total_words = [] # Stores all words said
+# dict with word as key, set as int page nums
+word_page_num_dict = {}
 for page_idx, page in enumerate(pages):
     # Recursively replace whitespace with one singular space
     page = page.replace("\n", " ").replace("\t", " ")
@@ -99,36 +103,22 @@ for page_idx, page in enumerate(pages):
     page = page.strip()
     # Get words
     words = page.split(" ")
-    long_words = []
     for word in words:
         # Strip some punctuation
         word = strip_characters(word).lower()
-        # If threshhold met, append to index
         if word_is_eligible(word):
-            total_words.append(word)
-            long_words.append(word)
-    index[page_idx] = long_words
+            temp_page_set = set(word_page_num_dict.get(word, set()).copy())
+            temp_page_set.add(page_idx)
+            word_page_num_dict[word] = sorted(temp_page_set)
 
-# Get result strings
-results = []
-for word in set(total_words):
-    pages_word_is_in = []
-    # Get page numbers
-    for page in index.keys():
-        if word in index[page]:
-            pages_word_is_in.append(str(page))
-
-    if len(pages_word_is_in) < 15:
-        joined_pagenums = ', '.join(pages_word_is_in)
-        # Only append if not page number
-        if word != joined_pagenums:
-            results.append(f"{word}: {', '.join(pages_word_is_in)}")
-
-# Sort output
-results.sort(key=str.casefold)
+# -- sorting logic, can alter depending on preference
+sorted_word_page_num_dict = dict(sorted(word_page_num_dict.items(), key=lambda item: (item[1], item[0])))
 
 # Write output to file
 with open(options.output_file, "w") as f:
-    for result in results:
-        f.write(result + "\n")
+    for sorted_word_page_num_key, sorted_word_page_num_value in sorted_word_page_num_dict.items():
+        if len(sorted_word_page_num_value) < 15:
+            result = f"{sorted_word_page_num_key}: " \
+                     f"{', '.join([str(pg_num_int) for pg_num_int in sorted_word_page_num_value])}"
+            f.write(result + "\n")
 print(f"Written index to {options.output_file}")
